@@ -23,7 +23,7 @@ function convertToObject(sourceString) {
     return [key, value];
   });
 
-  return Object.fromEntries(normalizedStylePairs.filter((pair) => !pair.key));
+  return Object.fromEntries(normalizedStylePairs.filter(([key, value]) => key));
 }
 
 module.exports = convertToObject;
