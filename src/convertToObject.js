@@ -6,28 +6,21 @@
  * @return {object}
  */
 function convertToObject(sourceString) {
-  const stylesArr = sourceString.split(';');
-  const styleEntries = [];
+  const stylesProperties = sourceString.split(';');
 
-  stylesArr.forEach((style, index) => {
-    styleEntries[index] = stylesArr[index].split(':');
-  });
+  const stylePairs = stylesProperties.map((style) => style.split(':'));
 
-  for (let entry = 0; entry < styleEntries.length; entry++) {
+  stylePairs.forEach((entry, index) => {
     const key = 0;
     const value = 1;
 
-    styleEntries[entry][key] = styleEntries[entry][key]
-      .replace(/\s+/g, ' ')
-      .trim();
+    entry[key] = entry[key].replace(/\s+/g, ' ').trim();
 
-    if (!styleEntries[entry][key]) {
-      styleEntries.splice(entry, 1);
-      entry--;
-      continue;
+    if (!entry[key]) {
+      return;
     }
 
-    let entryValue = styleEntries[entry][value];
+    let entryValue = entry[value];
     const wordChars = [...entryValue.matchAll(/\S/g)];
 
     entryValue = entryValue.slice(
@@ -35,10 +28,10 @@ function convertToObject(sourceString) {
       wordChars.at(-1).index + 1,
     );
 
-    styleEntries[entry][value] = entryValue;
-  }
+    entry[value] = entryValue;
+  });
 
-  return Object.fromEntries(styleEntries);
+  return Object.fromEntries(stylePairs);
 }
 
 module.exports = convertToObject;
