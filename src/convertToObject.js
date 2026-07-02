@@ -9,29 +9,21 @@ function convertToObject(sourceString) {
   const stylesProperties = sourceString.split(';');
 
   const stylePairs = stylesProperties.map((style) => style.split(':'));
+  const normalizedStylePairs = stylePairs.map((entry, index) => {
+    let [key, value] = entry;
 
-  stylePairs.forEach((entry, index) => {
-    const key = 0;
-    const value = 1;
+    key = key.replace(/\s+/g, ' ').trim();
 
-    entry[key] = entry[key].replace(/\s+/g, ' ').trim();
+    if (key) {
+      const wordChars = [...value.matchAll(/\S/g)];
 
-    if (!entry[key]) {
-      return;
+      value = value.slice(wordChars[0].index, wordChars.at(-1).index + 1);
     }
 
-    let entryValue = entry[value];
-    const wordChars = [...entryValue.matchAll(/\S/g)];
-
-    entryValue = entryValue.slice(
-      wordChars[0].index,
-      wordChars.at(-1).index + 1,
-    );
-
-    entry[value] = entryValue;
+    return [key, value];
   });
 
-  return Object.fromEntries(stylePairs);
+  return Object.fromEntries(normalizedStylePairs.filter((pair) => !pair.key));
 }
 
 module.exports = convertToObject;
